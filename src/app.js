@@ -2,6 +2,7 @@ const express = require("express");
 const cors = require("cors");
 
 const { v4: uuid, validate: isUuid } = require('uuid');
+const { parse } = require("uuid");
 
 const app = express();
 
@@ -49,7 +50,7 @@ app.put("/repositories/:id", (request, response) => {
   const reposIndex = repositories.findIndex((repo) => repo.id === id);
 
   if (reposIndex < 0)
-    return response.json({ "error: ": "ID not found" })
+    return response.status(400).json({ "error: ": "ID not found" })
 
   const likes = repositories[reposIndex].likes;
   console.log("tantoLikes: " + likes);
@@ -72,12 +73,26 @@ app.delete("/repositories/:id", (request, response) => {
   const reposIndex = repositories.findIndex((repo) => repo.id === id);
 
   if (reposIndex < 0)
-    return response.json({ "error: ": "ID not found" })
+    return response.status(400).json({ "error: ": "ID not found" })
 
+  repositories.splice(reposIndex, 1);
+
+  return response.status(204).send()
 });
 
 app.post("/repositories/:id/like", (request, response) => {
   // TODO
+  const { id } = request.params;
+
+  const reposIndex = repositories.findIndex((repo) => repo.id === id);
+
+  if (reposIndex < 0)
+    return response.status(400).json({ "error: ": "ID not found" })
+
+  let likeInt = parseInt(repositories[reposIndex].likes);
+  likeInt++;
+  repositories[reposIndex].likes = likeInt.toString();
+  return response.json(repositories[reposIndex]);
 });
 
 module.exports = app;
