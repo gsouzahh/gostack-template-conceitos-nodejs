@@ -23,7 +23,8 @@ app.post("/repositories", (request, response) => {
     techs,
   } = request.body;
   const id = uuid();
-  const likes = "0"
+  // const likes = "0"
+  const likes = 0
   const Repositorie =
   {
     id,
@@ -62,7 +63,8 @@ app.put("/repositories/:id", (request, response) => {
     likes
   }
   repositories[reposIndex] = nRepos;
-  return response.json({ nRepos })
+  // return response.json({ nRepos })
+  return response.json(repositories[reposIndex])
 });
 
 app.delete("/repositories/:id", (request, response) => {
@@ -72,14 +74,15 @@ app.delete("/repositories/:id", (request, response) => {
   const reposIndex = repositories.findIndex((repo) => repo.id === id);
 
   if (reposIndex < 0)
-    return response.status(400).json({ error: "ID not found" })
+    return response.status(400).send({ error: "ID not found" })
 
   repositories.splice(reposIndex, 1);
 
   return response.status(204).send()
 });
 
-app.post("/repositories/:id/likes", (request, response) => {
+// app.post("/repositories/:id/likes", (request, response) => {
+app.post("/repositories/:id/like", (request, response) => {
   // TODO
   const { id } = request.params;
 
@@ -92,7 +95,8 @@ app.post("/repositories/:id/likes", (request, response) => {
 
   let sumLike = parseInt(repositories[reposIndex].likes++);
   sumLike++;
-  likes = sumLike.toString()
+  // likes = sumLike.toString()
+  likes = sumLike;
   
   const newObj = {
     id,
@@ -101,9 +105,11 @@ app.post("/repositories/:id/likes", (request, response) => {
     techs,
     likes
   }
+  
   repositories[reposIndex] = newObj;
   console.log(likes);
-  return response.json({ newObj })
+  // return response.json(repositories[reposIndex])
+  return response.json(repositories[reposIndex])
 });
 
 
